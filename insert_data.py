@@ -1,72 +1,34 @@
-#this file is used to insert data into the database
-
 from sqlalchemy.orm import sessionmaker
 from db_create import engine
 from models import *
+from join_filter import query_students_by_course, insert_data
 
-# create a Session
-Session = sessionmaker(bind = engine)
+# Create a Session
+Session = sessionmaker(bind=engine)
 session = Session()
 
+# Information for courses, students, and schools table
+course_data = [(320, 'Computer Network', 'Explore the fundamentals of networking, including protocols, data transmission, and network architecture.'),
+               (321, 'Machine Learning', 'Dive into the world of artificial intelligence and data analysis, learning how to build predictive models and algorithms.'),
+               # Add more course data as needed
+              ]
 
-#####################################################
-#information for courses table
-course_id = [320, 321, 322, 323, 324, 325]
+student_data = [(100000, 'John', 'Doe'),
+                (100001, 'Jane', 'Doe'),
+                # Add more student data as needed
+               ]
 
-courses_name = ['Computer Network', 'Machine Learning', 'Object-Oriented Design', 
-           'Web Development', 'Discreet Structure', 'Operating System']
+school_data = [(20000, 'University of California, Berkeley', 'Berkeley, CA'),
+               (20001, 'University of California, Los Angeles', 'Los Angeles, CA'),
+               # Add more school data as needed
+              ]
 
-course_descriptions = [
-    'Explore the fundamentals of networking, including protocols, data transmission, and network architecture.',
-    'Dive into the world of artificial intelligence and data analysis, learning how to build predictive models and algorithms.',
-    'Design: Learn the principles of designing software using object-oriented programming concepts, promoting code reusability and modularity.',
-    'Master the art of creating dynamic and interactive websites, covering HTML, CSS, JavaScript, and server-side technologies.',
-    'Study mathematical structures that underlie computer science, including logic, set theory, and graph theory.',
-    'Gain an understanding of the core components and functions of operating systems, essential for managing computer resources and processes.'
-]
+# Insert data into the database
+insert_data(session, course_data, student_data, school_data)
 
-#####################################################
-#information for students table
-student_id = [100000, 100001, 100002, 100003, 100004, 100005]
-
-first_name = ['John', 'Jane', 'Jack', 'Jill', 'James', 'Judy']
-
-last_name = ['Doe', 'Doe', 'Smith', 'Smith', 'Johnson', 'Johnson']
-
-#####################################################
-
-#information for schools table
-school_id = [20000, 20001, 20002, 20003, 20004, 20005]
-
-school_name = ['University of California, Berkeley', 'University of California, Los Angeles','University of California, San Diego',
-                'University of California, Santa Barbara', 'University of California, Irvine', 'University of California, Davis']
-school_address = ['Berkeley, CA', 'Los Angeles, CA', 'San Diego, CA', 'Santa Barbara, CA', 'Irvine, CA', 'Davis, CA']
-
-
-#####################################################
-
-#creates all courses in session
-for i in range(len(course_id)):
-    new_course = Course(course_id[i], courses_name[i], course_descriptions[i])
-    session.add(new_course)
-
-#####################################################
-
-#creates all students in session
-for i in range(len(student_id)):
-    new_student = Student(student_id[i], first_name[i], last_name[i])
-    session.add(new_student)
-
-#####################################################
-
-#creates all schools in session
-
-for i in range(len(school_id)):
-    new_school = School(school_id[i], school_name[i], school_address[i])
-    session.add(new_school)
-
-#####################################################
-
-#commits the changes to the database
-session.commit()
-
+# Query students for a specific course
+course_name = 'Machine Learning'
+students = query_students_by_course(course_name)
+print(f"Students enrolled in '{course_name}':")
+for student in students:
+    print(student)
